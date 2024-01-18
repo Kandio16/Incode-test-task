@@ -3,7 +3,6 @@ import { Sidebar } from "./components/Sidebar/Sidebar";
 import { observer } from "mobx-react-lite";
 import { appStore } from "./stores";
 import { BoardView } from "./components/BoardView/BoardView";
-import { toJS } from "mobx";
 
 const App = observer(() => {
   useEffect(() => {

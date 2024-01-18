@@ -4,7 +4,7 @@ import {
   getAllBoardsTitle,
   sendNewBoard,
   updateBoardById,
-} from "../services/boards";
+} from "../api/boards";
 import { Board } from "../types";
 import {
   GET_DEFAULT_NEW_BOARD,

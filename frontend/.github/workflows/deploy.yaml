@@ -1,0 +1,19 @@
+name: Build and Deploy to Production
+
+on:
+  workflow_dispatch:
+
+  push:
+    branches: [main, master]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      REACT_APP_SERVER_BASE_URL: ${{ secrets.REACT_APP_SERVER_BASE_URL }}
+
+    steps:
+      - name: Install Dependencies
+        run: yarn install
+      - name: Production Build
+        run: yarn build
