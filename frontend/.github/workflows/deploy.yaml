@@ -1,19 +1,22 @@
-name: Build and Deploy to Production
+name: Build and Deploy
 
 on:
   workflow_dispatch:
 
-  push:
-    branches: [main, master]
-
 jobs:
-  deploy:
+  deploy-frontend:
     runs-on: ubuntu-latest
     env:
       REACT_APP_SERVER_BASE_URL: ${{ secrets.REACT_APP_SERVER_BASE_URL }}
 
     steps:
-      - name: Install Dependencies
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Install Frontend Dependencies
+        working-directory: frontend
         run: yarn install
-      - name: Production Build
+
+      - name: Frontend Production Build
+        working-directory: frontend
         run: yarn build
