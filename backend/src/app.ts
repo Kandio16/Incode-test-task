@@ -3,10 +3,12 @@ import cors from 'cors';
 import { PORT, SERVICE_NAME } from '~/config';
 import { handleErrors } from '~/middlewares/error-handler';
 import { routes } from '~/routes';
+import { connectToDatabase } from './services/db';
 
 (async function start() {
   try {
     const app = express();
+    await connectToDatabase();
 
     app
       .use(express.json({ limit: '10mb' }))
