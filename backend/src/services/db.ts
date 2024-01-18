@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { DB_USER_NAME, DB_USER_PASSWORD } from '~/config';
+import { DB_USER_NAME, DB_USER_PASSWORD } from '../config';
 
 export const connectToDatabase = async () => {
   try {
