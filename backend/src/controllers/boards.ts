@@ -1,5 +1,5 @@
 import express, { NextFunction, Request, Response } from 'express';
-import { create, getAll, remove, update } from '~/services/boards';
+import { create, getAll, remove, update } from '../services/boards';
 
 export async function getAllBoards(req: Request, res: Response, next: NextFunction) {
   try {

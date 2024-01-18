@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { SERVICE_NAME } from '~/config';
+import { SERVICE_NAME } from '../config';
 import { boardsRoutes } from './boards';
 
 const router = express.Router();
