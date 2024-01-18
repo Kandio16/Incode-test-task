@@ -11,19 +11,11 @@ import { styled, Theme } from "@mui/system";
 
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditableText from "../EditableText/EditableText";
-
-interface Ticket {
-  title: string;
-  description: string;
-}
-
-interface ColumnProps {
-  title: string;
-  tickets: Ticket[];
-}
+import { Column as ColumnType } from "../../types";
+import { appStore } from "../../stores";
 
 const StyledColumn = styled(Paper)(({ theme }: { theme: Theme }) => ({
-  width: "300px",
+  minWidth: "300px",
   padding: theme.spacing(2),
   backgroundColor: "#ebecf0",
   borderRadius: "8px",
@@ -45,39 +37,74 @@ const TicketButtons = styled("div")({
   alignSelf: "flex-end",
 });
 
-const handleSave = (editedText: string) => {
-  console.log("Saved:", editedText);
-};
-
-const Column: React.FC<ColumnProps> = ({ title, tickets }) => {
+const Column: React.FC<ColumnType> = ({ title, tickets, id }) => {
   return (
     <StyledColumn>
-      <EditableText onSave={handleSave} variant="h6" initialText={title} />
+      <EditableText
+        onChange={(newTitle) => appStore.changeColumnTitle(newTitle, id)}
+        variant="h6"
+        initialText={title}
+      />
       <List>
         {tickets.map((ticket, index) => (
           <StyledTicket key={index}>
             <ListItemText
               primary={
-                <EditableText onSave={handleSave} initialText={ticket.title} />
+                <EditableText
+                  onChange={(newText) =>
+                    appStore.changeTicketData({
+                      columnId: id,
+                      ticketId: ticket.id,
+                      key: "title",
+                      newText,
+                    })
+                  }
+                  initialText={ticket.title}
+                />
               }
               secondary={
                 <EditableText
-                  onSave={handleSave}
+                  onChange={(newText) =>
+                    appStore.changeTicketData({
+                      columnId: id,
+                      ticketId: ticket.id,
+                      key: "description",
+                      newText,
+                    })
+                  }
                   initialText={ticket.description}
                 />
               }
             />
             <TicketButtons>
-              <IconButton aria-label="delete">
+              <IconButton
+                aria-label="delete"
+                onClick={() => appStore.deleteTicket(id, ticket.id)}
+              >
                 <DeleteIcon />
               </IconButton>
             </TicketButtons>
           </StyledTicket>
         ))}
       </List>
-      <Button variant="contained" color="primary">
-        Add Ticket
-      </Button>
+      <div style={{ display: "flex", gap: "10px" }}>
+        <Button
+          onClick={() => appStore.addTicket(id)}
+          size="small"
+          variant="contained"
+          color="primary"
+        >
+          Add Ticket
+        </Button>
+        <Button
+          onClick={() => appStore.deleteColumn(id)}
+          size="small"
+          variant="contained"
+          color="error"
+        >
+          Delete Column
+        </Button>
+      </div>
     </StyledColumn>
   );
 };

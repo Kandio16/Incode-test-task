@@ -6,18 +6,26 @@ import {
   List,
   ListItem,
   ListItemText,
+  Typography,
 } from "@mui/material";
+import { Board } from "../../types";
+import { appStore } from "../../stores";
 
 interface SidebarProps {
-  boards: { title: string; id: number }[];
+  boards: Board[];
 }
 
-export const Sidebar: React.FC<SidebarProps> = () => {
+export const Sidebar: React.FC<SidebarProps> = ({ boards }) => {
   return (
     <Drawer variant="permanent" anchor="left">
-      <List>
+      <List style={{ maxWidth: "240px" }}>
         <ListItem>
-          <Button variant="contained" color="primary" fullWidth>
+          <Button
+            variant="contained"
+            color="primary"
+            fullWidth
+            onClick={appStore.addNewBoard}
+          >
             Create Board
           </Button>
         </ListItem>
@@ -26,11 +34,19 @@ export const Sidebar: React.FC<SidebarProps> = () => {
         </ListItem>
         <ListItem>
           <List style={{ width: "100%" }}>
-            {["Board 1", "Board 2", "Board 3"].map((board, index) => (
-              <ListItem button onClick={() => console.log(board)} key={index}>
-                <ListItemText primary={board} />
-              </ListItem>
-            ))}
+            {boards.length ? (
+              boards.map((board) => (
+                <ListItem
+                  button
+                  onClick={() => appStore.setSelectedBoard(board.id)}
+                  key={board.id}
+                >
+                  <ListItemText primary={board.title} />
+                </ListItem>
+              ))
+            ) : (
+              <Typography variant="caption">Create new board...</Typography>
+            )}
           </List>
         </ListItem>
       </List>

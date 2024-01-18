@@ -1,20 +1,20 @@
 import React, { useState, useEffect, useRef } from "react";
 import TextField from "@mui/material/TextField";
 import Typography, { TypographyProps } from "@mui/material/Typography";
+import { appStore } from "../../stores";
 
 interface EditableTextProps {
   initialText: string;
   variant?: TypographyProps["variant"];
-  onSave: (editedText: string) => void;
+  onChange: (newTitle: string) => void;
 }
 
 const EditableText: React.FC<EditableTextProps> = ({
   initialText,
   variant,
-  onSave,
+  onChange,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [text, setText] = useState(initialText);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
@@ -30,12 +30,12 @@ const EditableText: React.FC<EditableTextProps> = ({
   const handleTextFieldChange: React.ChangeEventHandler<HTMLInputElement> = (
     event
   ) => {
-    setText(event.target.value);
+    onChange(event.target.value);
   };
 
   const handleTextFieldBlur = () => {
     setIsEditing(false);
-    onSave(text);
+    appStore.saveData();
   };
 
   return (
@@ -43,14 +43,14 @@ const EditableText: React.FC<EditableTextProps> = ({
       {isEditing ? (
         <TextField
           inputRef={inputRef}
-          value={text}
+          value={initialText}
           onChange={handleTextFieldChange}
           onBlur={handleTextFieldBlur}
           size="small"
         />
       ) : (
         <Typography variant={variant ?? "body1"} onClick={handleTextClick}>
-          {text}
+          {initialText}
         </Typography>
       )}
     </>
