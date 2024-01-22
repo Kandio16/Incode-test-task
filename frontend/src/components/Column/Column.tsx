@@ -8,6 +8,7 @@ import {
   IconButton,
 } from "@mui/material";
 import { styled, Theme } from "@mui/system";
+import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditableText from "../EditableText/EditableText";
@@ -20,6 +21,9 @@ const StyledColumn = styled(Paper)(({ theme }: { theme: Theme }) => ({
   backgroundColor: "#ebecf0",
   borderRadius: "8px",
   marginRight: theme.spacing(2),
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "stretch",
 }));
 
 const StyledTicket = styled(ListItem)(({ theme }: { theme: Theme }) => ({
@@ -37,14 +41,26 @@ const TicketButtons = styled("div")({
   alignSelf: "flex-end",
 });
 
-const Column: React.FC<ColumnType> = ({ title, tickets, id }) => {
+const Column: React.FC<ColumnType & { dragHandleProps: any }> = ({
+  title,
+  tickets,
+  id,
+  dragHandleProps,
+}) => {
   return (
     <StyledColumn>
-      <EditableText
-        onChange={(newTitle) => appStore.changeColumnTitle(newTitle, id)}
-        variant="h6"
-        initialText={title}
-      />
+      <div
+        style={{ display: "flex", alignItems: "center", marginBottom: "8px" }}
+      >
+        <IconButton {...dragHandleProps}>
+          <DragIndicatorIcon />
+        </IconButton>
+        <EditableText
+          onChange={(newTitle) => appStore.changeColumnTitle(newTitle, id)}
+          variant="h6"
+          initialText={title}
+        />
+      </div>
       <List>
         {tickets.map((ticket, index) => (
           <StyledTicket key={index}>

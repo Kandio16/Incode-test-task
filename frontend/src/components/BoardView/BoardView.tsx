@@ -1,10 +1,10 @@
 import React from "react";
 import { Button, Typography } from "@mui/material";
 import EditableText from "../EditableText/EditableText";
-import Column from "../Column/Column";
 import { Board } from "../../types";
 import { observer } from "mobx-react-lite";
 import { appStore } from "../../stores";
+import { OrderedList } from "../ColumnList/ColumnList";
 
 interface SidebarProps {
   board: Board | null;
@@ -41,14 +41,10 @@ export const BoardView: React.FC<SidebarProps> = observer(({ board }) => {
               height: "80%",
             }}
           >
-            {board.columns.map((column) => (
-              <Column
-                key={column.id}
-                id={column.id}
-                title={column.title}
-                tickets={column.tickets}
-              />
-            ))}
+            <OrderedList
+              items={board.columns}
+              onOrderChange={(columns) => appStore.setColumnOrder(columns)}
+            />
             <Button
               variant="contained"
               onClick={appStore.addColumn}

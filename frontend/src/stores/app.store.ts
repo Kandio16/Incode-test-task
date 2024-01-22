@@ -5,7 +5,7 @@ import {
   sendNewBoard,
   updateBoardById,
 } from "../api/boards";
-import { Board } from "../types";
+import { Board, Column } from "../types";
 import {
   GET_DEFAULT_NEW_BOARD,
   GET_DEFAULT_NEW_COLUMN,
@@ -225,6 +225,27 @@ class AppStore {
       this.selectedBoard = updatedBoard;
       this.boards = this.boards.map((board) =>
         board.id === updatedBoard.id ? updatedBoard : board
+      );
+    });
+
+    this.saveData();
+  };
+
+  @action
+  setColumnOrder = (columns: Column[]) => {
+    if (!this.selectedBoard) return;
+
+    const boardId = this.selectedBoard.id;
+
+    const updatedBoard = {
+      ...this.selectedBoard,
+      columns,
+    };
+
+    runInAction(() => {
+      this.selectedBoard = updatedBoard;
+      this.boards = this.boards.map((board) =>
+        board.id === boardId ? updatedBoard : board
       );
     });
 
