@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Drawer,
   Button,
@@ -16,6 +16,11 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ boards }) => {
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const filteredBoards = boards.filter((board) =>
+    board.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <Drawer variant="permanent" anchor="left">
       <List style={{ maxWidth: "240px" }}>
@@ -30,12 +35,18 @@ export const Sidebar: React.FC<SidebarProps> = ({ boards }) => {
           </Button>
         </ListItem>
         <ListItem>
-          <TextField size="small" label="Search" fullWidth />
+          <TextField
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            size="small"
+            label="Search"
+            fullWidth
+          />
         </ListItem>
         <ListItem>
           <List style={{ width: "100%" }}>
-            {boards.length ? (
-              boards.map((board) => (
+            {filteredBoards.length ? (
+              filteredBoards.map((board) => (
                 <ListItem
                   button
                   onClick={() => appStore.setSelectedBoard(board.id)}
@@ -45,7 +56,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ boards }) => {
                 </ListItem>
               ))
             ) : (
-              <Typography variant="caption">Create new board...</Typography>
+              <Typography variant="caption">
+                {!searchTerm ? "Create new board..." : "No matching boards..."}
+              </Typography>
             )}
           </List>
         </ListItem>
