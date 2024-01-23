@@ -1,7 +1,7 @@
 # Incode-test-task
 
 # Task Management Boards
-[Demo](https://kandio16.github.io/sombra-test-task/)
+[Demo](https://incode-test-task-g151.vercel.app/)
 
 
 ## Overview
