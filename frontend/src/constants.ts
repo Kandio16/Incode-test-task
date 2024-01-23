@@ -19,3 +19,6 @@ export const GET_DEFAULT_NEW_COLUMN = () => {
 export const GET_DEFAULT_NEW_TICKET = () => {
   return { id: uuidv4(), title: "New TASK", description: "Description" };
 };
+
+export const COLUMN_DND_TYPE = "COLUMNS";
+export const TICKET_DND_TYPE = "TICKETS";

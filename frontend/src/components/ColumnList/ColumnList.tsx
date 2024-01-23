@@ -7,24 +7,25 @@ import {
 } from "react-beautiful-dnd";
 import { Column as ColumnType } from "../../types";
 import Column from "../Column/Column";
+import { toJS } from "mobx";
+import { appStore } from "../../stores";
+import { COLUMN_DND_TYPE } from "../../constants";
 
 export const OrderedList: React.FC<{
   items: ColumnType[];
-  onOrderChange: (items: ColumnType[]) => void;
-}> = ({ items, onOrderChange }) => {
+}> = ({ items }) => {
   function handleOnDragEnd(result: DropResult) {
-    if (!result.destination) return;
-
-    const newItems = Array.from(items);
-    const [reorderedItem] = newItems.splice(result.source.index, 1);
-    newItems.splice(result.destination.index, 0, reorderedItem);
-    onOrderChange(newItems);
+    appStore.changeOrder(result);
   }
 
   return (
     <div>
       <DragDropContext onDragEnd={handleOnDragEnd}>
-        <Droppable droppableId="ordered-list" direction="horizontal">
+        <Droppable
+          droppableId="ordered-list"
+          type={COLUMN_DND_TYPE}
+          direction="horizontal"
+        >
           {(provided) => (
             <div
               style={{

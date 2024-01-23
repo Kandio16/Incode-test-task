@@ -1,19 +1,12 @@
 import React from "react";
-import {
-  Paper,
-  List,
-  ListItem,
-  ListItemText,
-  Button,
-  IconButton,
-} from "@mui/material";
+import { Paper, List, Button, IconButton } from "@mui/material";
 import { styled, Theme } from "@mui/system";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 
-import DeleteIcon from "@mui/icons-material/Delete";
 import EditableText from "../EditableText/EditableText";
 import { Column as ColumnType } from "../../types";
 import { appStore } from "../../stores";
+import { TicketList } from "../Ticket/Ticket";
 
 const StyledColumn = styled(Paper)(({ theme }: { theme: Theme }) => ({
   minWidth: "300px",
@@ -25,21 +18,6 @@ const StyledColumn = styled(Paper)(({ theme }: { theme: Theme }) => ({
   flexDirection: "column",
   alignItems: "stretch",
 }));
-
-const StyledTicket = styled(ListItem)(({ theme }: { theme: Theme }) => ({
-  marginBottom: theme.spacing(1),
-  backgroundColor: "#fff",
-  borderRadius: "4px",
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "flex-start",
-}));
-
-const TicketButtons = styled("div")({
-  marginTop: "30px",
-  display: "flex",
-  alignSelf: "flex-end",
-});
 
 const Column: React.FC<ColumnType & { dragHandleProps: any }> = ({
   title,
@@ -62,46 +40,7 @@ const Column: React.FC<ColumnType & { dragHandleProps: any }> = ({
         />
       </div>
       <List>
-        {tickets.map((ticket, index) => (
-          <StyledTicket key={index}>
-            <ListItemText
-              primary={
-                <EditableText
-                  onChange={(newText) =>
-                    appStore.changeTicketData({
-                      columnId: id,
-                      ticketId: ticket.id,
-                      key: "title",
-                      newText,
-                    })
-                  }
-                  initialText={ticket.title}
-                />
-              }
-              secondary={
-                <EditableText
-                  onChange={(newText) =>
-                    appStore.changeTicketData({
-                      columnId: id,
-                      ticketId: ticket.id,
-                      key: "description",
-                      newText,
-                    })
-                  }
-                  initialText={ticket.description}
-                />
-              }
-            />
-            <TicketButtons>
-              <IconButton
-                aria-label="delete"
-                onClick={() => appStore.deleteTicket(id, ticket.id)}
-              >
-                <DeleteIcon />
-              </IconButton>
-            </TicketButtons>
-          </StyledTicket>
-        ))}
+        <TicketList tickets={tickets} columnId={id} />
       </List>
       <div style={{ display: "flex", gap: "10px" }}>
         <Button

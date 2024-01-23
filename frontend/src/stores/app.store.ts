@@ -5,12 +5,15 @@ import {
   sendNewBoard,
   updateBoardById,
 } from "../api/boards";
-import { Board, Column } from "../types";
+import { Board } from "../types";
 import {
+  COLUMN_DND_TYPE,
+  TICKET_DND_TYPE,
   GET_DEFAULT_NEW_BOARD,
   GET_DEFAULT_NEW_COLUMN,
   GET_DEFAULT_NEW_TICKET,
 } from "../constants";
+import { DropResult } from "react-beautiful-dnd";
 
 class AppStore {
   constructor() {
@@ -231,15 +234,29 @@ class AppStore {
     this.saveData();
   };
 
-  @action
-  setColumnOrder = (columns: Column[]) => {
-    if (!this.selectedBoard) return;
+  changeOrder = (result: DropResult) => {
+    if (result.type === COLUMN_DND_TYPE) {
+      this.setColumnOrder(result);
+    }
+
+    if (result.type === TICKET_DND_TYPE) {
+      this.setTicketOrder(result);
+    }
+  };
+
+  private setColumnOrder = (result: DropResult) => {
+    const { destination, source } = result;
+    if (!this.selectedBoard || !destination) return;
+
+    const newColumns = Array.from(this.selectedBoard.columns);
+    const [reorderedItem] = newColumns.splice(source.index, 1);
+    newColumns.splice(destination.index, 0, reorderedItem);
 
     const boardId = this.selectedBoard.id;
 
     const updatedBoard = {
       ...this.selectedBoard,
-      columns,
+      newColumns,
     };
 
     runInAction(() => {
@@ -247,6 +264,64 @@ class AppStore {
       this.boards = this.boards.map((board) =>
         board.id === boardId ? updatedBoard : board
       );
+    });
+
+    this.saveData();
+  };
+
+  private setTicketOrder = (result: DropResult) => {
+    const { destination, source, draggableId } = result;
+    if (!this.selectedBoard || !destination) return;
+    const sourceColumn = this.selectedBoard.columns.find(
+      (column) => column.id === source.droppableId
+    );
+    const destinationColumn = this.selectedBoard.columns.find(
+      (column) => column.id === destination.droppableId
+    );
+
+    if (!sourceColumn || !destinationColumn) return;
+
+    const ticketToMove = sourceColumn.tickets.find(
+      (ticket) => ticket.id === draggableId
+    );
+
+    if (!ticketToMove) return;
+
+    runInAction(() => {
+      const updatedSelectedBoard = this.selectedBoard;
+      if (!updatedSelectedBoard) return;
+
+      updatedSelectedBoard.columns = updatedSelectedBoard.columns.map(
+        (column) => {
+          if (column.id === sourceColumn.id) {
+            return {
+              ...column,
+              tickets: column.tickets.filter(
+                (ticket) => ticket.id !== draggableId
+              ),
+            };
+          }
+          return column;
+        }
+      );
+
+      updatedSelectedBoard.columns = updatedSelectedBoard.columns.map(
+        (column) => {
+          if (column.id === destinationColumn.id) {
+            return {
+              ...column,
+              tickets: [
+                ...column.tickets.slice(0, destination.index),
+                ticketToMove,
+                ...column.tickets.slice(destination.index),
+              ],
+            };
+          }
+          return column;
+        }
+      );
+
+      this.selectedBoard = updatedSelectedBoard;
     });
 
     this.saveData();

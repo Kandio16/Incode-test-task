@@ -41,10 +41,7 @@ export const BoardView: React.FC<SidebarProps> = observer(({ board }) => {
               height: "80%",
             }}
           >
-            <OrderedList
-              items={board.columns}
-              onOrderChange={(columns) => appStore.setColumnOrder(columns)}
-            />
+            <OrderedList items={board.columns} />
             <Button
               variant="contained"
               onClick={appStore.addColumn}
